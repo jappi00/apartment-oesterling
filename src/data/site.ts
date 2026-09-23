@@ -8,7 +8,7 @@ export const site = {
   zip: "26203",
   city: "Wardenburg",
   region: "Niedersachsen",
-  phoneDisplay: "0172 4309768",
+  phoneDisplay: "+49 1724309768",
   phoneIntl: "+49 172 4309768",
   phoneHref: "tel:+491724309768",
   email: "info@apartmentoesterling.de",

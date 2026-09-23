@@ -54,9 +54,10 @@ const nav = [
       >
         {ui.switchText}
       </a>
-      <a href={site.phoneHref} class="btn hidden px-5 py-2.5 sm:inline-flex">
+      <!-- Between lg and xl the full menu leaves room only for the phone icon -->
+      <a href={site.phoneHref} class="btn hidden px-5 py-2.5 whitespace-nowrap sm:inline-flex lg:max-xl:px-3.5">
         <Icon name="phone" class="size-4" />
-        {site.phoneDisplay}
+        <span class="lg:max-xl:sr-only">{site.phoneDisplay}</span>
       </a>
       <button
         id="menu-toggle"
@@ -88,7 +89,7 @@ const nav = [
       }
     </ul>
     <div class="page pb-5 sm:hidden">
-      <a href={site.phoneHref} class="btn w-full">
+      <a href={site.phoneHref} class="btn w-full whitespace-nowrap">
         <Icon name="phone" class="size-4" />
         {ui.call(site.phoneDisplay)}
       </a>

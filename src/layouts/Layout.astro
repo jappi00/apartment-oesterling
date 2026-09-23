@@ -8,6 +8,7 @@ import Lightbox from "../components/Lightbox.astro";
 import { site } from "../data/site";
 import { langs, locales, path, t, type Lang, type RouteKey } from "../i18n";
 import defaultOg from "../assets/img/IMG_9262-scaled.jpg";
+import figtreeLatin from "@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2?url";
 
 interface Props {
   lang: Lang;
@@ -78,6 +79,7 @@ const structuredData = breadcrumb ? [...jsonLd, breadcrumb] : jsonLd;
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href={figtreeLatin} as="font" type="font/woff2" crossorigin />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap.xml" />
     <meta name="theme-color" content="#cfe4f5" />

@@ -1,0 +1,87 @@
+---
+// One lightbox per page. Every link with [data-zoom] opens in it, in page order.
+import Icon from "./Icon.astro";
+import { t, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const l = t(Astro.props.lang).lightbox;
+---
+
+<dialog
+  data-lightbox
+  class="m-auto size-full max-h-none max-w-none bg-transparent p-0 backdrop:bg-sea/95"
+  aria-label={l.label}
+>
+  <div data-lightbox-stage class="relative flex size-full items-center justify-center p-4 md:p-16">
+    <figure class="flex max-h-full max-w-full flex-col items-center gap-3">
+      <img data-lightbox-img alt="" class="max-h-[calc(100vh-7rem)] max-w-full rounded-lg object-contain shadow-2xl" />
+      <figcaption class="text-center text-sm text-white/80">
+        <span data-lightbox-caption></span>
+        <span data-lightbox-count class="ml-2 text-white/50 tabular-nums"></span>
+      </figcaption>
+    </figure>
+    <button data-lightbox-close type="button" aria-label={l.close} class="absolute top-3 right-3 rounded-full p-2 text-white hover:bg-white/10">
+      <Icon name="close" class="size-8" />
+    </button>
+    <button data-lightbox-prev type="button" aria-label={l.prev} class="absolute left-1 rounded-full p-2 text-white hover:bg-white/10 md:left-4">
+      <Icon name="chevronLeft" class="size-9" />
+    </button>
+    <button data-lightbox-next type="button" aria-label={l.next} class="absolute right-1 rounded-full p-2 text-white hover:bg-white/10 md:right-4">
+      <Icon name="chevronRight" class="size-9" />
+    </button>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>("[data-lightbox]")!;
+  const img = dialog.querySelector<HTMLImageElement>("[data-lightbox-img]")!;
+  const caption = dialog.querySelector<HTMLElement>("[data-lightbox-caption]")!;
+  const count = dialog.querySelector<HTMLElement>("[data-lightbox-count]")!;
+  const stage = dialog.querySelector<HTMLElement>("[data-lightbox-stage]")!;
+
+  // The same photo can appear twice on a page (e.g. hero and gallery); list each URL once
+  const links = [...document.querySelectorAll<HTMLAnchorElement>("a[data-zoom]")];
+  const urls = [...new Set(links.map((a) => a.href))];
+  const alts = new Map(links.map((a) => [a.href, a.dataset.alt ?? ""]));
+  let current = 0;
+
+  const show = (i: number) => {
+    current = (i + urls.length) % urls.length;
+    img.src = urls[current];
+    img.alt = alts.get(urls[current]) ?? "";
+    caption.textContent = img.alt;
+    count.textContent = `${current + 1} / ${urls.length}`;
+  };
+
+  links.forEach((link) =>
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      show(urls.indexOf(link.href));
+      dialog.showModal();
+    }),
+  );
+
+  dialog.querySelector("[data-lightbox-close]")!.addEventListener("click", () => dialog.close());
+  dialog.querySelector("[data-lightbox-prev]")!.addEventListener("click", () => show(current - 1));
+  dialog.querySelector("[data-lightbox-next]")!.addEventListener("click", () => show(current + 1));
+
+  // Clicking the dark backdrop closes the viewer
+  dialog.addEventListener("click", (e) => {
+    if (e.target === dialog || e.target === stage) dialog.close();
+  });
+
+  dialog.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") show(current - 1);
+    if (e.key === "ArrowRight") show(current + 1);
+  });
+
+  let touchX = 0;
+  dialog.addEventListener("touchstart", (e) => (touchX = e.touches[0].clientX), { passive: true });
+  dialog.addEventListener("touchend", (e) => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+  });
+</script>

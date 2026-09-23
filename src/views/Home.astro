@@ -1,0 +1,284 @@
+---
+import { getImage } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import Icon from "../components/Icon.astro";
+import Photo from "../components/Photo.astro";
+import Gallery from "../components/Gallery.astro";
+import Horizon from "../components/Horizon.astro";
+import { gallery, img } from "../data/gallery";
+import { distances, formatPrice, prices, site } from "../data/site";
+import { path, t, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const ui = t(lang);
+
+const copy = {
+  de: {
+    title: "Ferienwohnung in Wardenburg bei Oldenburg | Apartment Oesterling",
+    description:
+      "3-Zimmer-Ferienwohnung mit Terrasse im Ortskern von Wardenburg, 6 km vor Oldenburg. Für bis zu 3 Gäste, WLAN inklusive, ab 40 € pro Nacht.",
+    h1: "Moin! Ihre Ferienwohnung in Wardenburg",
+    lead: "Die Wohnung liegt ruhig im Ortskern. Zum Bäcker gehen Sie 300 Meter, bis in die Oldenburger Innenstadt sind es 6 Kilometer.",
+    priceCta: "Preise ab 40 € pro Nacht",
+    heroAlt: "Sitzecke im Garten mit Rosen vor einer grünen Hecke",
+    highlights: [
+      { icon: "wifi", title: "WLAN inklusive", text: "Das Internet kostet nichts extra." },
+      { icon: "sun", title: "Eigene Terrasse", text: "Etwa 20 m² mit Tisch und Stühlen." },
+      { icon: "car", title: "Parken vor der Tür", text: "Sie parken an der Straße direkt vor der Wohnung." },
+      { icon: "bus", title: "Bus um die Ecke", text: "Die nächste Haltestelle ist etwa 150 m entfernt." },
+    ],
+    aboutTitle: "Hell und ruhig wohnen auf 50 m²",
+    about: [
+      "Das 3-Zimmer-Apartment ist modern eingerichtet und bietet Platz für bis zu drei Personen.",
+      "Im Wohnzimmer stehen ein Sofa, zwei Sessel und ein Fernseher. Geschlafen wird im Doppelbett (1,80 m) oder im Schrankbett im zweiten Zimmer. Die Küche ist komplett ausgestattet, bis hin zum Geschirrspüler, und im Bad gibt es eine Dusche.",
+    ],
+    aboutCta: "Alle Räume ansehen",
+    livingAlt: "Wohnzimmer mit grauem Ecksofa und Couchtisch",
+    bedroomAlt: "Schlafzimmer mit Doppelbett",
+    kitchenAlt: "Einbauküche mit Esstisch",
+    photosTitle: "Fotos",
+    photosHint: "Zum Vergrößern antippen",
+    areaTitle: "Alles Wichtige zu Fuß",
+    area: "Wardenburg liegt im Landkreis Oldenburg am Rand der Wildeshauser Geest, einer Gegend mit vielen Wander- und Radwegen. Für Einkäufe brauchen Sie kein Auto.",
+    entranceAlt: "Hauseingang Am Fischerheim 5 mit Buchsbaumkugeln",
+    tips: "Ausflugstipps",
+    pricesTitle: "Preise pro Nacht",
+    pricesText: "Die Endreinigung vereinbaren wir persönlich mit Ihnen.",
+  },
+  en: {
+    title: "Holiday apartment in Wardenburg near Oldenburg | Apartment Oesterling",
+    description:
+      "Three-room holiday apartment with a terrace in the centre of Wardenburg, 6 km from Oldenburg. Sleeps up to 3, free Wi-Fi, from €40 per night.",
+    h1: "Moin! Your holiday apartment in Wardenburg",
+    lead: "“Moin” is how people say hello in northern Germany. The apartment sits in a quiet spot in the village centre: the bakery is 300 metres away, Oldenburg city centre 6 kilometres.",
+    priceCta: "Prices from €40 per night",
+    heroAlt: "Garden seating area with roses in front of a green hedge",
+    highlights: [
+      { icon: "wifi", title: "Free Wi-Fi", text: "Internet access is included in the price." },
+      { icon: "sun", title: "Private terrace", text: "About 20 m² with a table and chairs." },
+      { icon: "car", title: "Parking at the door", text: "Park on the street right outside the apartment." },
+      { icon: "bus", title: "Bus stop nearby", text: "The nearest stop is about 150 m away." },
+    ],
+    aboutTitle: "Bright and quiet, 50 m²",
+    about: [
+      "The three-room apartment has modern furnishings and sleeps up to three people.",
+      "The living room has a sofa, two armchairs and a TV. You sleep in a 1.80 m double bed or on the fold-down wall bed in the second room. The kitchen has everything you need, dishwasher included, and the bathroom has a shower.",
+    ],
+    aboutCta: "See all rooms",
+    livingAlt: "Living room with grey corner sofa and coffee table",
+    bedroomAlt: "Bedroom with double bed",
+    kitchenAlt: "Fitted kitchen with dining table",
+    photosTitle: "Photos",
+    photosHint: "Tap a photo to enlarge it",
+    areaTitle: "Everything within walking distance",
+    area: "Wardenburg is in the district of Oldenburg, on the edge of the Wildeshausen Geest, an area with plenty of walking and cycling routes. You won't need a car for shopping.",
+    entranceAlt: "Front entrance at Am Fischerheim 5 with box hedges",
+    tips: "Day trips",
+    pricesTitle: "Prices per night",
+    pricesText: "We arrange the final cleaning with you when you book.",
+  },
+}[lang];
+
+const hero = img("IMG_9262-scaled.jpg");
+const heroOg = await getImage({ src: hero, width: 1200, format: "jpg" });
+
+const lodging = {
+  "@context": "https://schema.org",
+  "@type": "LodgingBusiness",
+  "@id": `${site.url}/#lodging`,
+  name: site.name,
+  description: copy.description,
+  url: new URL(path("home", lang), site.url).href,
+  telephone: site.phoneIntl,
+  email: site.email,
+  image: new URL(heroOg.src, site.url).href,
+  priceRange: lang === "de" ? "ab 40 € pro Nacht" : "from €40 per night",
+  currenciesAccepted: "EUR",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: site.street,
+    postalCode: site.zip,
+    addressLocality: site.city,
+    addressRegion: site.region,
+    addressCountry: "DE",
+  },
+  hasMap: site.maps,
+  sameAs: [site.facebook],
+  amenityFeature: [
+    { "@type": "LocationFeatureSpecification", name: lang === "de" ? "WLAN" : "Wi-Fi", value: true },
+    { "@type": "LocationFeatureSpecification", name: lang === "de" ? "Terrasse" : "Terrace", value: true },
+    { "@type": "LocationFeatureSpecification", name: lang === "de" ? "Parkplatz" : "Parking", value: true },
+    { "@type": "LocationFeatureSpecification", name: lang === "de" ? "Küche" : "Kitchen", value: true },
+  ],
+  containsPlace: {
+    "@type": "Apartment",
+    name: lang === "de" ? "Ferienwohnung Oesterling" : "Oesterling holiday apartment",
+    numberOfRooms: 3,
+    floorSize: { "@type": "QuantitativeValue", value: 50, unitCode: "MTK" },
+    occupancy: { "@type": "QuantitativeValue", maxValue: 3 },
+  },
+};
+---
+
+<Layout lang={lang} route="home" title={copy.title} description={copy.description} jsonLd={[lodging]}>
+  <!-- Hero: a stretch of northern sky -->
+  <section class="relative bg-linear-to-b from-sky-deep via-sky to-sky">
+    <div class="page grid items-center gap-10 pt-12 pb-10 md:grid-cols-[1.1fr_1fr] md:gap-14 md:pt-20 md:pb-12">
+      <div>
+        <h1 class="text-h1 font-extrabold tracking-tight text-balance">{copy.h1}</h1>
+        <p class="prose-body mt-6 text-xl md:text-[1.375rem] md:leading-snug">{copy.lead}</p>
+        <div class="mt-9 flex flex-wrap gap-3">
+          <a href="#kontakt" class="btn">{ui.enquire}</a>
+          <a href={path("prices", lang)} class="btn-quiet">{copy.priceCta}</a>
+        </div>
+      </div>
+
+      <Photo
+        src={hero}
+        alt={copy.heroAlt}
+        lang={lang}
+        widths={[640, 960, 1400]}
+        sizes="(min-width: 768px) 55vw, 100vw"
+        eager
+        class="relative z-10 aspect-[4/3] shadow-[0_18px_40px_-22px_rgb(23_56_94/0.5)]"
+      />
+    </div>
+    <Horizon />
+  </section>
+
+  <!-- Highlights -->
+  <section class="page pt-10 pb-20 md:pt-12 md:pb-24">
+    <ul class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        copy.highlights.map((h) => (
+          <li>
+            <span class="grid size-14 place-items-center rounded-full bg-sky text-blue">
+              <Icon name={h.icon as "wifi"} class="size-7" />
+            </span>
+            <h2 class="mt-4 text-h3 font-bold">{h.title}</h2>
+            <p class="mt-1.5 text-ink/75">{h.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- The apartment -->
+  <section class="bg-sky py-20 md:py-28">
+    <div class="page grid gap-12 md:grid-cols-12 md:gap-10">
+      <div class="md:col-span-5 md:self-center">
+        <h2 class="text-h2 font-extrabold tracking-tight">{copy.aboutTitle}</h2>
+        <div class="prose-body mt-6 space-y-5">
+          {copy.about.map((p) => <p>{p}</p>)}
+        </div>
+        <a href={path("rooms", lang)} class="btn-quiet mt-8">{copy.aboutCta}</a>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 md:col-span-7 md:gap-4">
+        <Photo
+          src={img("IMG_3856-1-scaled.jpeg")}
+          alt={copy.livingAlt}
+          lang={lang}
+          widths={[600, 1000, 1400]}
+          sizes="(min-width: 768px) 55vw, 100vw"
+          class="col-span-2 aspect-[16/10]"
+        />
+        <Photo
+          src={img("cropped-Bilder-22-1.jpg")}
+          alt={copy.bedroomAlt}
+          lang={lang}
+          widths={[400, 700]}
+          sizes="(min-width: 768px) 27vw, 50vw"
+          class="aspect-square"
+        />
+        <Photo
+          src={img("IMG_9241-scaled.jpg")}
+          alt={copy.kitchenAlt}
+          lang={lang}
+          widths={[400, 700]}
+          sizes="(min-width: 768px) 27vw, 50vw"
+          class="aspect-square"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Photos -->
+  <section id="fotos" class="page py-20 md:py-28">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h2 class="text-h2 font-extrabold tracking-tight">{copy.photosTitle}</h2>
+      <p class="text-ink-muted">{copy.photosHint}</p>
+    </div>
+    <div class="mt-10">
+      <Gallery images={gallery} lang={lang} />
+    </div>
+  </section>
+
+  <!-- Location -->
+  <section class="bg-sky py-20 md:py-28">
+    <div class="page grid gap-12 md:grid-cols-2 md:gap-16">
+      <div>
+        <h2 class="text-h2 font-extrabold tracking-tight">{copy.areaTitle}</h2>
+        <p class="prose-body mt-6">{copy.area}</p>
+        <Photo
+          src={img("IMG_9260-scaled.jpg")}
+          alt={copy.entranceAlt}
+          lang={lang}
+          widths={[600, 1000]}
+          sizes="(min-width: 768px) 45vw, 100vw"
+          class="mt-8 aspect-[16/10]"
+        />
+      </div>
+
+      <div class="self-center">
+        <ul class="divide-y divide-sea/10 rounded-photo bg-white px-6 shadow-[0_1px_2px_rgb(23_56_94/0.06)]">
+          {
+            distances.map((d) => (
+              <li class="flex items-center justify-between gap-4 py-4">
+                <span class="flex items-center gap-3 font-medium">
+                  <Icon name="check" class="size-5 shrink-0 text-meadow" />
+                  {d.label[lang]}
+                </span>
+                <span class="whitespace-nowrap text-ink-muted tabular-nums">
+                  {ui.about} {d.meters} m
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href={path("area", lang)} class="btn-quiet">{copy.tips}</a>
+          <a href={site.maps} target="_blank" rel="noopener" class="btn-quiet">
+            <Icon name="pin" class="size-4" />
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prices -->
+  <section class="page py-20 md:py-28">
+    <div class="grid gap-10 md:grid-cols-2 md:gap-16">
+      <div>
+        <h2 class="text-h2 font-extrabold tracking-tight">{copy.pricesTitle}</h2>
+        <p class="prose-body mt-6">{copy.pricesText}</p>
+        <a href="#kontakt" class="btn mt-8">{ui.enquire}</a>
+      </div>
+      <ul class="self-start">
+        {
+          prices.map((p) => (
+            <li class="flex items-baseline justify-between gap-6 border-b border-sea/10 py-4 first:pt-0">
+              <span class="font-medium">{p.label[lang]}</span>
+              <span class="text-3xl font-extrabold text-sea tabular-nums">{formatPrice(p.amount, lang)}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Layout>

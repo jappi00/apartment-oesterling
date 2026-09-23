@@ -1,0 +1,196 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import { site } from "../data/site";
+import { path, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+/*
+  Carried over from the old WordPress site and adapted to the static site:
+  - removed: Google Analytics and cookie sections (the new site uses neither)
+  - changed: "contact form" section now covers e-mail/phone (there is no form)
+  - added: no cookies, locally hosted fonts, external links
+  - added: GDPR legal bases, data subject rights (Art. 16-21) and right to complain (LfD Niedersachsen)
+  TODO: name the hosting provider in "Server-Log-Files" once it is chosen, and add a section
+  for the planned cookieless analytics tool before it goes live.
+*/
+
+type Section = { title: string; paragraphs: string[]; list?: string[]; after?: string[] };
+
+const copy: Record<Lang, { title: string; description: string; h1: string; binding?: string; controller: string; email: string; sections: Section[] }> = {
+  de: {
+    title: "Datenschutzerklärung | Apartment Oesterling",
+    description: "Datenschutzerklärung der Ferienwohnung Apartment Oesterling in Wardenburg.",
+    h1: "Datenschutzerklärung",
+    controller: "Verantwortlich",
+    email: "E-Mail",
+    sections: [
+      {
+        title: "Datenschutz",
+        paragraphs: [
+          "Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.",
+          "Die Nutzung unserer Webseite ist ohne Angabe personenbezogener Daten möglich. Soweit Sie uns personenbezogene Daten (beispielsweise Name, Anschrift oder E-Mail-Adresse) mitteilen, erfolgt dies stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.",
+          "Wir weisen darauf hin, dass die Datenübertragung im Internet (z. B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.",
+        ],
+      },
+      {
+        title: "Keine Cookies, keine Analyse-Tools",
+        paragraphs: [
+          "Diese Website setzt keine Cookies und verwendet keine Analyse- oder Tracking-Dienste. Die Schriftarten werden von unserem eigenen Server geladen, es findet dabei keine Verbindung zu Servern Dritter (etwa Google Fonts) statt.",
+        ],
+      },
+      {
+        title: "Server-Log-Files",
+        paragraphs: [
+          "Der Provider der Seiten erhebt und speichert automatisch Informationen in so genannten Server-Log-Files, die Ihr Browser automatisch an uns übermittelt. Dies sind:",
+        ],
+        list: ["Browsertyp und Browserversion", "verwendetes Betriebssystem", "Referrer-URL", "Hostname des zugreifenden Rechners", "Uhrzeit der Serveranfrage"],
+        after: [
+          "Diese Daten sind nicht bestimmten Personen zuordenbar. Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Wir behalten uns vor, diese Daten nachträglich zu prüfen, wenn uns konkrete Anhaltspunkte für eine rechtswidrige Nutzung bekannt werden.",
+          "Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt im sicheren und fehlerfreien Betrieb der Website.",
+        ],
+      },
+      {
+        title: "Kontakt per E-Mail oder Telefon",
+        paragraphs: [
+          "Wenn Sie uns per E-Mail oder Telefon Anfragen zukommen lassen, werden Ihre Angaben inklusive der von Ihnen angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.",
+          "Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, wenn Ihre Anfrage auf eine Buchung zielt, ansonsten unser berechtigtes Interesse an der Beantwortung von Anfragen (Art. 6 Abs. 1 lit. f DSGVO). Wir löschen die Daten, sobald die Anfrage erledigt ist und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.",
+        ],
+      },
+      {
+        title: "Links zu anderen Websites",
+        paragraphs: [
+          "Diese Website enthält Links zu externen Angeboten, zum Beispiel zu Google Maps und Facebook. Diese Inhalte sind nicht eingebettet. Daten werden an die jeweiligen Anbieter erst übertragen, wenn Sie einen solchen Link anklicken. Für die Datenverarbeitung auf diesen Seiten sind die jeweiligen Anbieter verantwortlich.",
+        ],
+      },
+      {
+        title: "Ihre Rechte",
+        paragraphs: [
+          "Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung. Außerdem haben Sie nach Art. 16 bis 21 DSGVO das Recht auf Berichtigung, Löschung, Einschränkung der Verarbeitung und Datenübertragbarkeit sowie das Recht, der Verarbeitung zu widersprechen. Hierzu sowie zu weiteren Fragen zum Thema personenbezogene Daten können Sie sich jederzeit unter der im Impressum angegebenen Adresse an uns wenden.",
+          "Sie haben zudem das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Für uns zuständig ist die Landesbeauftragte für den Datenschutz Niedersachsen, Prinzenstraße 5, 30159 Hannover.",
+        ],
+      },
+      {
+        title: "Widerspruch Werbe-Mails",
+        paragraphs: [
+          "Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten zur Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit widersprochen. Die Betreiber der Seiten behalten sich ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch Spam-E-Mails, vor.",
+        ],
+      },
+    ],
+  },
+  en: {
+    title: "Privacy policy | Apartment Oesterling",
+    description: "Privacy policy of the Apartment Oesterling holiday apartment in Wardenburg, Germany.",
+    h1: "Privacy policy",
+    binding: "This is a translation for your convenience. The German version is legally binding.",
+    controller: "Responsible party",
+    email: "Email",
+    sections: [
+      {
+        title: "Data protection",
+        paragraphs: [
+          "The operators of this website take the protection of your personal data very seriously. We treat your personal data confidentially and in accordance with the statutory data protection regulations and this privacy policy.",
+          "You can use our website without providing any personal data. If you give us personal data (such as your name, address or email address), you always do so voluntarily. We do not pass this data on to third parties without your express consent.",
+          "Please note that data transmitted over the internet (for example by email) can have security gaps. Complete protection of data against access by third parties is not possible.",
+        ],
+      },
+      {
+        title: "No cookies, no analytics",
+        paragraphs: [
+          "This website does not set cookies and does not use any analytics or tracking services. Fonts are loaded from our own server, so no connection is made to third-party servers such as Google Fonts.",
+        ],
+      },
+      {
+        title: "Server log files",
+        paragraphs: [
+          "The website's hosting provider automatically collects and stores information in server log files, which your browser transmits to us automatically. This includes:",
+        ],
+        list: ["browser type and version", "operating system", "referrer URL", "host name of the accessing computer", "time of the server request"],
+        after: [
+          "This data cannot be assigned to specific individuals and is not combined with other data sources. We reserve the right to check this data retrospectively if we become aware of specific indications of unlawful use.",
+          "The legal basis is Art. 6(1)(f) GDPR. Our legitimate interest is the secure and error-free operation of the website.",
+        ],
+      },
+      {
+        title: "Contact by email or phone",
+        paragraphs: [
+          "If you send us an enquiry by email or phone, we store the details you provide, including your contact details, to process the enquiry and in case of follow-up questions. We do not pass this data on without your consent.",
+          "The legal basis is Art. 6(1)(b) GDPR if your enquiry relates to a booking, otherwise our legitimate interest in answering enquiries (Art. 6(1)(f) GDPR). We delete the data once your enquiry has been dealt with, unless statutory retention periods apply.",
+        ],
+      },
+      {
+        title: "Links to other websites",
+        paragraphs: [
+          "This website contains links to external services such as Google Maps and Facebook. This content is not embedded. Data is only transferred to these providers when you click such a link. The respective providers are responsible for the processing of data on their websites.",
+        ],
+      },
+      {
+        title: "Your rights",
+        paragraphs: [
+          "You have the right at any time to free information about your stored personal data, its origin and recipients and the purpose of the data processing. Under Art. 16 to 21 GDPR you also have the right to rectification, erasure, restriction of processing and data portability, and the right to object to processing. For this and any other questions about personal data, you can contact us at any time at the address given in the legal notice.",
+          "You also have the right to lodge a complaint with a data protection supervisory authority. The authority responsible for us is the State Commissioner for Data Protection of Lower Saxony (Die Landesbeauftragte für den Datenschutz Niedersachsen), Prinzenstraße 5, 30159 Hannover, Germany.",
+        ],
+      },
+      {
+        title: "Objection to promotional emails",
+        paragraphs: [
+          "We hereby object to the use of the contact details published under the legal notice obligation for sending unsolicited advertising and information material. The operators of this website expressly reserve the right to take legal action in the event of unsolicited advertising, for example spam emails.",
+        ],
+      },
+    ],
+  },
+};
+
+const c = copy[lang];
+---
+
+<Layout lang={lang} route="privacy" title={c.title} description={c.description} noindex>
+  <PageIntro title={c.h1}>
+    {c.binding && <p>{c.binding}</p>}
+  </PageIntro>
+
+  <section class="py-16 md:py-20">
+    <div class="page">
+      <div class="max-w-[70ch] space-y-10">
+        {
+          c.sections.map((s) => (
+            <div>
+              <h2 class="text-h3 font-bold">{s.title}</h2>
+              {s.paragraphs.map((p) => (
+                <p class="mt-3 text-ink/85">{p}</p>
+              ))}
+              {s.list && (
+                <ul class="mt-3 list-disc space-y-1 pl-6 text-ink/85 marker:text-blue">
+                  {s.list.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              )}
+              {s.after?.map((p) => (
+                <p class="mt-3 text-ink/85">{p}</p>
+              ))}
+            </div>
+          ))
+        }
+
+        <div>
+          <h2 class="text-h3 font-bold">{c.controller}</h2>
+          <p class="mt-3 text-ink/85">
+            {site.owner}<br />
+            {site.street}<br />
+            {site.zip} {site.city}<br />
+            {c.email}: <a href={`mailto:${site.email}`} class="text-blue underline underline-offset-4">{site.email}</a><br />
+            <a href={path("imprint", lang)} class="text-blue underline underline-offset-4">
+              {lang === "de" ? "Impressum" : "Legal notice"}
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

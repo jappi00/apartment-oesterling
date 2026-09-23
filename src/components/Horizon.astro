@@ -1,0 +1,20 @@
+---
+// Soft horizon line where the sky section meets the white page
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<svg
+  class:list={["block h-10 w-full text-paper md:h-16", className]}
+  viewBox="0 0 1440 64"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+>
+  <path
+    fill="currentColor"
+    d="M0 40c160-22 320-30 480-18s300 34 480 30 320-34 480-40v52H0Z"
+  />
+</svg>

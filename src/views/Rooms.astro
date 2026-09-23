@@ -1,0 +1,160 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import Photo from "../components/Photo.astro";
+import Icon from "../components/Icon.astro";
+import { img } from "../data/gallery";
+import type { Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+  de: {
+    title: "Ausstattung der Ferienwohnung in Wardenburg | Apartment Oesterling",
+    description:
+      "Wohnzimmer, Schlafzimmer mit 1,80-m-Doppelbett, zweites Zimmer mit Schrankbett, Einbauküche mit Geschirrspüler, Duschbad und 20 m² Terrasse.",
+    h1: "Ausstattung",
+    intro: "Rund 50 m² mit drei Zimmern, Küche und Duschbad. Dazu kommt eine eigene Terrasse.",
+    navLabel: "Räume",
+  },
+  en: {
+    title: "Rooms and amenities | Apartment Oesterling, Wardenburg",
+    description:
+      "Living room, bedroom with a 1.80 m double bed, second room with a wall bed, fitted kitchen with dishwasher, shower room and a 20 m² terrace.",
+    h1: "Rooms and amenities",
+    intro: "About 50 m² with three rooms, a kitchen and a shower room, plus a private terrace.",
+    navLabel: "Rooms",
+  },
+}[lang];
+
+const rooms = [
+  {
+    id: { de: "wohnzimmer", en: "living-room" },
+    title: { de: "Wohnzimmer", en: "Living room" },
+    text: {
+      de: "Hier legen Sie abends die Beine hoch. Durch das große Fenster fällt viel Tageslicht.",
+      en: "The place to put your feet up in the evening. A large window lets in plenty of daylight.",
+    },
+    items: { de: ["Ecksofa und zwei Sessel", "Fernseher", "Radio"], en: ["Corner sofa and two armchairs", "TV", "Radio"] },
+    image: img("cropped-IMG_3859-scaled-1.jpeg"),
+    alt: { de: "Wohnzimmer mit grauem Ecksofa, Couchtisch und Blumenbild", en: "Living room with grey corner sofa, coffee table and a flower painting" },
+  },
+  {
+    id: { de: "schlafzimmer", en: "bedroom" },
+    title: { de: "Schlafzimmer", en: "Bedroom" },
+    text: {
+      de: "Brauchen Sie eine zusätzliche Decke oder ein weiteres Kissen, sagen Sie einfach Bescheid.",
+      en: "If you need an extra blanket or pillow, just let us know.",
+    },
+    items: { de: ["Doppelbett, 1,80 m breit", "Kleiderschrank"], en: ["Double bed, 1.80 m wide", "Wardrobe"] },
+    image: img("cropped-Bilder-22-1.jpg"),
+    alt: { de: "Schlafzimmer mit Doppelbett", en: "Bedroom with double bed" },
+  },
+  {
+    id: { de: "zweites-schlafzimmer", en: "second-bedroom" },
+    title: { de: "Zweites Schlafzimmer", en: "Second bedroom" },
+    text: {
+      de: "Das Schrankbett klappen Sie bei Bedarf herunter. Durch die Tür kommen Sie direkt in den Garten.",
+      en: "The wall bed folds down when you need it. A door leads straight out to the garden.",
+    },
+    items: { de: ["Schrankbett für eine Person", "Schreibtisch"], en: ["Single wall bed", "Desk"] },
+    image: img("IMG_9254-scaled.jpg"),
+    alt: {
+      de: "Zweites Schlafzimmer mit ausgeklapptem Schrankbett und Tür zum Garten",
+      en: "Second bedroom with the wall bed folded down and a door to the garden",
+    },
+  },
+  {
+    id: { de: "kueche", en: "kitchen" },
+    title: { de: "Küche", en: "Kitchen" },
+    text: {
+      de: "In der Einbauküche kochen Sie wie zu Hause. Gegessen wird am Tisch für zwei.",
+      en: "The fitted kitchen has what you need to cook for yourself, and a table for two.",
+    },
+    items: {
+      de: ["Herd mit Backofen", "Kühlschrank mit Gefrierfach", "Mikrowelle", "Geschirrspüler", "Kaffeemaschine", "Wasserkocher", "Toaster", "Esstisch"],
+      en: ["Cooker with oven", "Fridge with freezer compartment", "Microwave", "Dishwasher", "Coffee machine", "Kettle", "Toaster", "Dining table"],
+    },
+    image: img("IMG_9241-scaled.jpg"),
+    alt: { de: "Einbauküche mit Esstisch", en: "Fitted kitchen with dining table" },
+  },
+  {
+    id: { de: "bad", en: "bathroom" },
+    title: { de: "Duschbad", en: "Shower room" },
+    text: {
+      de: "Hell gefliest, mit Dusche, WC und Waschtisch.",
+      en: "Bright and tiled, with a shower, toilet and washbasin.",
+    },
+    items: { de: ["Dusche", "WC", "Waschtisch mit Spiegel"], en: ["Shower", "Toilet", "Washbasin with mirror"] },
+    image: img("IMG_9236-scaled.jpg"),
+    alt: { de: "Badezimmer mit Dusche, WC und Waschtisch", en: "Bathroom with shower, toilet and washbasin" },
+  },
+  {
+    id: { de: "terrasse", en: "terrace" },
+    title: { de: "Terrasse", en: "Terrace" },
+    text: {
+      de: "Die Hecke schützt vor Blicken. Hier sitzen Sie ungestört in der Sonne.",
+      en: "A tall hedge keeps it private, so you can sit out in the sun undisturbed.",
+    },
+    items: { de: ["Etwa 20 m²", "Tisch und Stühle"], en: ["About 20 m²", "Table and chairs"] },
+    image: img("IMG_9224-scaled.jpg"),
+    alt: { de: "Terrasse mit Tisch und Stühlen vor einer Hecke", en: "Terrace with table and chairs in front of a hedge" },
+  },
+];
+---
+
+<Layout lang={lang} route="rooms" title={copy.title} description={copy.description} ogImage={rooms[0].image}>
+  <PageIntro title={copy.h1}>
+    <p>{copy.intro}</p>
+  </PageIntro>
+
+  <nav aria-label={copy.navLabel} class="sticky top-[72px] z-30 bg-paper/95 backdrop-blur">
+    <ul class="page flex gap-2 overflow-x-auto py-3 font-medium whitespace-nowrap">
+      {
+        rooms.map((room) => (
+          <li>
+            <a
+              href={`#${room.id[lang]}`}
+              class="block rounded-full bg-sky px-4 py-2 text-sea transition-colors hover:bg-sky-deep"
+            >
+              {room.title[lang]}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <div class="page divide-y divide-sea/10">
+    {
+      rooms.map((room, i) => (
+        <section id={room.id[lang]} class="grid gap-8 py-14 md:grid-cols-12 md:gap-10 md:py-20">
+          <Photo
+            src={room.image}
+            alt={room.alt[lang]}
+            lang={lang}
+            widths={[600, 1000, 1400]}
+            sizes="(min-width: 768px) 58vw, 100vw"
+            class:list={["aspect-4/3 md:col-span-7", i % 2 === 1 && "md:order-2"]}
+          />
+          <div class="md:col-span-5 md:self-center">
+            <h2 class="text-h2 font-extrabold tracking-tight">{room.title[lang]}</h2>
+            <p class="prose-body mt-4">{room.text[lang]}</p>
+            <ul class="mt-6 grid gap-x-6 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+              {room.items[lang].map((item) => (
+                <li class="flex items-center gap-3 border-b border-sea/10 py-2.5">
+                  <Icon name="check" class="size-5 shrink-0 text-meadow" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Layout>

@@ -1,0 +1,88 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import Icon from "../components/Icon.astro";
+import { formatPrice, prices, site } from "../data/site";
+import { t, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const ui = t(lang);
+
+const copy = {
+  de: {
+    title: "Preise der Ferienwohnung in Wardenburg | Apartment Oesterling",
+    description:
+      "Ferienwohnung in Wardenburg ab 40 € pro Nacht: 40 € für die erste Person, 25 € für jede weitere und 12 € für Kinder von 4 bis 12 Jahren.",
+    h1: "Preise",
+    intro: "Alle Preise gelten pro Nacht. Die Endreinigung vereinbaren wir persönlich mit Ihnen.",
+    caption: "Übernachtungspreise pro Nacht",
+    colGuest: "Gast",
+    cleaning: "Endreinigung",
+    cleaningValue: "nach Absprache",
+    questionsTitle: "Noch Fragen?",
+    questionsText: "Rufen Sie uns an, dann klären wir alles direkt.",
+  },
+  en: {
+    title: "Prices | Apartment Oesterling, Wardenburg",
+    description:
+      "Holiday apartment in Wardenburg from €40 per night: €40 for the first guest, €25 for each additional guest and €12 for children aged 4 to 12.",
+    h1: "Prices",
+    intro: "All prices are per night. We arrange the final cleaning with you when you book.",
+    caption: "Prices per night",
+    colGuest: "Guest",
+    cleaning: "Final cleaning",
+    cleaningValue: "by arrangement",
+    questionsTitle: "Any questions?",
+    questionsText: "Give us a call and we'll answer them straight away.",
+  },
+}[lang];
+---
+
+<Layout lang={lang} route="prices" title={copy.title} description={copy.description}>
+  <PageIntro title={copy.h1}>
+    <p>{copy.intro}</p>
+  </PageIntro>
+
+  <section class="py-16 md:py-24">
+    <div class="page grid gap-14 md:grid-cols-12">
+      <table class="w-full text-lg md:col-span-7">
+        <caption class="sr-only">{copy.caption}</caption>
+        <thead>
+          <tr class="border-b-2 border-sea text-left text-sea">
+            <th scope="col" class="pb-3 font-bold">{copy.colGuest}</th>
+            <th scope="col" class="pb-3 text-right font-bold">{ui.perNight}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            prices.map((p) => (
+              <tr class="border-b border-sea/10">
+                <td class="py-5 pr-4 font-medium">{p.label[lang]}</td>
+                <td class="py-5 text-right text-3xl font-extrabold whitespace-nowrap text-sea tabular-nums">
+                  {formatPrice(p.amount, lang)}
+                </td>
+              </tr>
+            ))
+          }
+          <tr class="border-b border-sea/10">
+            <td class="py-5 pr-4 font-medium">{copy.cleaning}</td>
+            <td class="py-5 text-right text-ink-muted">{copy.cleaningValue}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <aside class="md:col-span-4 md:col-start-9">
+        <h2 class="text-h3 font-bold">{copy.questionsTitle}</h2>
+        <p class="mt-3 text-ink/80">{copy.questionsText}</p>
+        <a href={site.phoneHref} class="btn mt-6">
+          <Icon name="phone" class="size-4" />
+          {site.phoneDisplay}
+        </a>
+      </aside>
+    </div>
+  </section>
+</Layout>

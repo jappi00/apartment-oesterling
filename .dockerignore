@@ -1,0 +1,8 @@
+node_modules
+dist
+.astro
+.git
+.claude
+.agents
+.vscode
+.DS_Store

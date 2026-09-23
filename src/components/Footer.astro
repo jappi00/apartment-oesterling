@@ -1,0 +1,79 @@
+---
+import Icon from "./Icon.astro";
+import { site } from "../data/site";
+import { path, t, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const ui = t(lang);
+const year = new Date().getFullYear();
+---
+
+<footer id="kontakt" class="bg-sea text-white">
+  <div class="page grid gap-x-16 gap-y-12 py-20 md:grid-cols-[1.2fr_1fr] md:py-24">
+    <div>
+      <h2 class="text-h2 font-extrabold tracking-tight text-white">{ui.footerTitle}</h2>
+      <p class="mt-5 max-w-[44ch] text-white/80">{ui.footerText}</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={site.phoneHref} class="btn bg-white text-sea hover:bg-sky">
+          <Icon name="phone" class="size-4" />
+          {site.phoneDisplay}
+        </a>
+        <a
+          href={`mailto:${site.email}?subject=${encodeURIComponent(ui.emailSubject)}`}
+          class="btn bg-white/10 ring-1 ring-white/30 ring-inset hover:bg-white/20"
+        >
+          <Icon name="mail" class="size-4" />
+          {ui.emailUs}
+        </a>
+      </div>
+    </div>
+
+    <ul class="grid content-start gap-5">
+      <li>
+        <a href={site.maps} target="_blank" rel="noopener" class="group flex gap-4">
+          <Icon name="pin" class="mt-0.5 size-6 shrink-0 text-sky-deep" />
+          <span>
+            <span class="block text-sm text-white/60">{ui.address}</span>
+            <span class="underline decoration-white/30 underline-offset-4 group-hover:decoration-white">
+              {site.street}, {site.zip} {site.city}
+            </span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a href={`mailto:${site.email}`} class="group flex gap-4">
+          <Icon name="mail" class="mt-0.5 size-6 shrink-0 text-sky-deep" />
+          <span>
+            <span class="block text-sm text-white/60">{ui.email}</span>
+            <span class="underline decoration-white/30 underline-offset-4 group-hover:decoration-white">{site.email}</span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a href={site.facebook} target="_blank" rel="noopener" class="group flex gap-4">
+          <Icon name="facebook" class="mt-0.5 size-6 shrink-0 text-sky-deep" />
+          <span>
+            <span class="block text-sm text-white/60">Facebook</span>
+            <span class="underline decoration-white/30 underline-offset-4 group-hover:decoration-white">
+              facebook.com/apartmentoesterling
+            </span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="page flex flex-col gap-3 py-6 text-sm text-white/60 sm:flex-row sm:justify-between">
+      <p>© {year} {site.name}</p>
+      <ul class="flex gap-6">
+        <li><a href={path("imprint", lang)} class="hover:text-white">{ui.imprint}</a></li>
+        <li><a href={path("privacy", lang)} class="hover:text-white">{ui.privacy}</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

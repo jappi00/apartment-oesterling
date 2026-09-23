@@ -1,0 +1,102 @@
+---
+import "../styles/global.css";
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Lightbox from "../components/Lightbox.astro";
+import { site } from "../data/site";
+import { langs, locales, path, t, type Lang, type RouteKey } from "../i18n";
+import defaultOg from "../assets/img/IMG_9262-scaled.jpg";
+
+interface Props {
+  lang: Lang;
+  /** Omit for pages without a counterpart (e.g. 404): no canonical or hreflang tags */
+  route?: RouteKey;
+  title: string;
+  description: string;
+  ogImage?: ImageMetadata;
+  noindex?: boolean;
+  /** schema.org objects rendered as JSON-LD */
+  jsonLd?: object[];
+}
+
+const { lang, route, title, description, ogImage = defaultOg, noindex = false, jsonLd = [] } = Astro.props;
+
+const abs = (p: string) => new URL(p, site.url).href;
+const canonical = route ? abs(path(route, lang)) : undefined;
+const og = await getImage({ src: ogImage, width: 1200, format: "jpg" });
+
+// Breadcrumb trail for sub pages: Home > Page
+const ui = t(lang);
+const crumbName: Partial<Record<RouteKey, string>> = {
+  rooms: ui.nav.rooms,
+  area: ui.nav.area,
+  prices: ui.nav.prices,
+  imprint: ui.imprint,
+  privacy: ui.privacy,
+};
+const breadcrumb =
+  route && route !== "home"
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: site.name, item: abs(path("home", lang)) },
+          { "@type": "ListItem", position: 2, name: crumbName[route], item: canonical },
+        ],
+      }
+    : undefined;
+const structuredData = breadcrumb ? [...jsonLd, breadcrumb] : jsonLd;
+---
+
+<!doctype html>
+<html lang={locales[lang].html}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    {route && langs.map((l) => <link rel="alternate" hreflang={locales[l].html} href={abs(path(route, l))} />)}
+    {route && <link rel="alternate" hreflang="x-default" href={abs(path(route, "de"))} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content={locales[lang].og} />
+    {langs.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={locales[l].og} />)}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={abs(og.src)} />
+    <meta property="og:image:width" content={String(og.attributes.width ?? 1200)} />
+    <meta property="og:image:height" content={String(og.attributes.height ?? 900)} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <meta name="theme-color" content="#cfe4f5" />
+    <meta name="generator" content={Astro.generator} />
+
+    {structuredData.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a
+      href="#inhalt"
+      class="sr-only z-50 bg-paper px-4 py-2 focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+    >
+      {ui.skip}
+    </a>
+    <Header lang={lang} route={route} />
+    <main id="inhalt" class="flex-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <Lightbox lang={lang} />
+  </body>
+</html>

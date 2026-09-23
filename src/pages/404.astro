@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { path } from "../i18n";
+---
+
+<Layout
+  lang="de"
+  title="Seite nicht gefunden | Apartment Oesterling"
+  description="Diese Seite gibt es nicht mehr."
+  noindex
+>
+  <section class="bg-linear-to-b from-sky-deep to-sky">
+    <div class="page py-24 md:py-32">
+      <h1 class="text-h1 font-extrabold tracking-tight">Diese Seite gibt es nicht.</h1>
+      <p class="prose-body mt-5 text-xl">Vielleicht hat sich die Adresse geändert. Auf der Startseite finden Sie alles zur Ferienwohnung.</p>
+      <p class="prose-body mt-3 text-xl" lang="en">This page doesn't exist. The home page has everything about the apartment.</p>
+      <div class="mt-9 flex flex-wrap gap-3">
+        <a href={path("home", "de")} class="btn">Zur Startseite</a>
+        <a href={path("home", "en")} class="btn-quiet" lang="en" hreflang="en">English home page</a>
+      </div>
+    </div>
+  </section>
+</Layout>

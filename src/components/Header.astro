@@ -1,0 +1,111 @@
+---
+import Icon from "./Icon.astro";
+import { site } from "../data/site";
+import { path, t, type Lang, type RouteKey } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  route?: RouteKey;
+}
+
+const { lang, route } = Astro.props;
+const ui = t(lang);
+const other: Lang = lang === "de" ? "en" : "de";
+
+const nav = [
+  { key: "home", label: ui.nav.home, href: path("home", lang) },
+  { key: "rooms", label: ui.nav.rooms, href: path("rooms", lang) },
+  { key: "area", label: ui.nav.area, href: path("area", lang) },
+  { key: "prices", label: ui.nav.prices, href: path("prices", lang) },
+  { key: "contact", label: ui.nav.contact, href: "#kontakt" },
+];
+---
+
+<header class="sticky top-0 z-40 bg-paper/90 shadow-[0_1px_0_rgb(23_56_94/0.08)] backdrop-blur">
+  <nav class="page flex items-center justify-between gap-4 py-3.5" aria-label={ui.mainNav}>
+    <a href={path("home", lang)} class="leading-tight">
+      <span class="block text-xl font-extrabold tracking-tight text-sea">{site.name}</span>
+      <span class="block text-sm text-ink-muted">{ui.tagline}</span>
+    </a>
+
+    <ul class="hidden items-center gap-1 font-medium lg:flex">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={item.key === route ? "page" : undefined}
+              class="rounded-full px-4 py-2 text-ink/75 transition-colors hover:bg-sky hover:text-sea aria-[current=page]:bg-sky aria-[current=page]:text-sea"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={path(route ?? "home", other)}
+        hreflang={other}
+        lang={other}
+        aria-label={ui.switchLabel}
+        class="rounded-full px-3 py-2 text-sm font-bold text-sea ring-1 ring-sea/15 ring-inset transition-colors hover:bg-sky"
+      >
+        {ui.switchText}
+      </a>
+      <a href={site.phoneHref} class="btn hidden px-5 py-2.5 sm:inline-flex">
+        <Icon name="phone" class="size-4" />
+        {site.phoneDisplay}
+      </a>
+      <button
+        id="menu-toggle"
+        type="button"
+        class="-mr-2 rounded-full p-2 text-sea lg:hidden"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+      >
+        <span class="sr-only">{ui.menu}</span>
+        <Icon name="menu" class="size-7" />
+      </button>
+    </div>
+  </nav>
+
+  <div id="mobile-menu" hidden class="border-t border-sea/10 bg-paper lg:hidden">
+    <ul class="page py-2 text-lg font-medium">
+      {
+        nav.map((item) => (
+          <li class="border-b border-sea/10 last:border-0">
+            <a
+              href={item.href}
+              aria-current={item.key === route ? "page" : undefined}
+              class="block py-3.5 text-sea aria-[current=page]:text-blue"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="page pb-5 sm:hidden">
+      <a href={site.phoneHref} class="btn w-full">
+        <Icon name="phone" class="size-4" />
+        {ui.call(site.phoneDisplay)}
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById("menu-toggle")!;
+  const menu = document.getElementById("mobile-menu")!;
+
+  const setOpen = (open: boolean) => {
+    menu.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+  };
+
+  toggle.addEventListener("click", () => setOpen(Boolean(menu.hidden)));
+  menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+  document.addEventListener("keydown", (e) => e.key === "Escape" && setOpen(false));
+</script>

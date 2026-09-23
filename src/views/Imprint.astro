@@ -1,0 +1,54 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import { site } from "../data/site";
+import type { Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+  de: {
+    title: "Impressum | Apartment Oesterling",
+    description: "Impressum der Ferienwohnung Apartment Oesterling in Wardenburg.",
+    h1: "Impressum",
+    provider: "Angaben gemäß § 5 DDG",
+    contact: "Kontakt",
+    phone: "Telefon",
+    email: "E-Mail",
+  },
+  en: {
+    title: "Legal notice | Apartment Oesterling",
+    description: "Legal notice (Impressum) for the Apartment Oesterling holiday apartment in Wardenburg, Germany.",
+    h1: "Legal notice",
+    provider: "Information pursuant to § 5 DDG (German Digital Services Act)",
+    contact: "Contact",
+    phone: "Phone",
+    email: "Email",
+  },
+}[lang];
+---
+
+<Layout lang={lang} route="imprint" title={copy.title} description={copy.description}>
+  <PageIntro title={copy.h1} />
+
+  <section class="py-16 md:py-20">
+    <div class="page">
+      <h2 class="text-h3 font-bold">{copy.provider}</h2>
+      <p class="mt-3 text-ink/85">
+        {site.owner}<br />
+        {site.street}<br />
+        {site.zip} {site.city}{lang === "en" && <><br />Germany</>}
+      </p>
+
+      <h2 class="mt-10 text-h3 font-bold">{copy.contact}</h2>
+      <p class="mt-3 text-ink/85">
+        {copy.phone}: <a href={site.phoneHref} class="text-blue underline underline-offset-4">{lang === "de" ? site.phoneDisplay : site.phoneIntl}</a><br />
+        {copy.email}: <a href={`mailto:${site.email}`} class="text-blue underline underline-offset-4">{site.email}</a>
+      </p>
+    </div>
+  </section>
+</Layout>

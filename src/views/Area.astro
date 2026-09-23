@@ -1,0 +1,169 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import Photo from "../components/Photo.astro";
+import Icon from "../components/Icon.astro";
+import { img } from "../data/gallery";
+import { distances, site } from "../data/site";
+import { t, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const ui = t(lang);
+
+const copy = {
+  de: {
+    title: "Umgebung und Ausflugstipps | Ferienwohnung in Wardenburg",
+    description:
+      "Bäcker, Supermarkt, Apotheke und Bushaltestelle erreichen Sie von der Ferienwohnung in wenigen Minuten zu Fuß. Dazu unsere Ausflugstipps für Oldenburg und die Region.",
+    h1: "Umgebung",
+    intro:
+      "Wardenburg liegt im Landkreis Oldenburg am Rand der Wildeshauser Geest. Für den Alltag brauchen Sie kein Auto, Bäcker und Supermarkt sind wenige Minuten entfernt.",
+    nearbyTitle: "Im Ort",
+    nearbyText: "Fußwege ab der Haustür, Am Fischerheim 5.",
+    colPlace: "Ziel",
+    colDistance: "Entfernung",
+    caption: "Entfernungen zu Fuß von der Ferienwohnung",
+    entranceAlt: "Hauseingang Am Fischerheim 5 mit Buchsbaumkugeln",
+    tipsTitle: "Ausflugstipps",
+    tipsText: "Unsere Empfehlungen für Ausflüge in die Region.",
+    groups: ["Natur und Wasser", "In Oldenburg", "Museen und Freizeitparks"],
+  },
+  en: {
+    title: "Area and day trips | Apartment Oesterling, Wardenburg",
+    description:
+      "The bakery, supermarket, pharmacy and bus stop are a few minutes' walk from the apartment. Plus our day trip tips for Oldenburg and the region.",
+    h1: "The area",
+    intro:
+      "Wardenburg is in the district of Oldenburg, on the edge of the Wildeshausen Geest. You won't need a car for everyday errands: the bakery and supermarket are a few minutes away.",
+    nearbyTitle: "In the village",
+    nearbyText: "Walking distances from the front door, Am Fischerheim 5.",
+    colPlace: "Place",
+    colDistance: "Distance",
+    caption: "Walking distances from the apartment",
+    entranceAlt: "Front entrance at Am Fischerheim 5 with box hedges",
+    tipsTitle: "Day trips",
+    tipsText: "Our suggestions for days out in the region.",
+    groups: ["Nature and water", "In Oldenburg", "Museums and parks"],
+  },
+}[lang];
+
+// Links from the old site, checked and moved to https (dead pages replaced by the provider's current page).
+const tipGroups: { label: Record<Lang, string>; href: string }[][] = [
+  [
+    { label: { de: "Wanderwege rund um Wardenburg", en: "Walking routes around Wardenburg" }, href: "https://www.buergerverein-wardenburg.de/wardenburg/wanderwege/" },
+    { label: { de: "Thülsfelder Talsperre", en: "Thülsfeld Reservoir" }, href: "https://www.thuelsfelder-talsperre.de/" },
+    { label: { de: "Bad Zwischenahn", en: "Bad Zwischenahn spa town" }, href: "https://www.bad-zwischenahn.de/" },
+    { label: { de: "Zwischenahner Meer", en: "Lake Zwischenahn" }, href: "https://de.wikipedia.org/wiki/Zwischenahner_Meer" },
+    { label: { de: "Park der Gärten", en: "Park der Gärten (garden park)" }, href: "https://www.park-der-gaerten.de/" },
+    { label: { de: "Varel und Vareler Hafen", en: "Varel and its harbour" }, href: "https://www.varel.de/" },
+    { label: { de: "Greetsiel", en: "Greetsiel fishing village" }, href: "https://de.wikipedia.org/wiki/Greetsiel" },
+    { label: { de: "Nordsee", en: "North Sea coast" }, href: "https://www.nordsee53grad.de/" },
+  ],
+  [
+    { label: { de: "Oldenburgisches Staatstheater", en: "Oldenburg State Theatre" }, href: "https://staatstheater.de/" },
+    { label: { de: "Theater Laboratorium", en: "Theater Laboratorium" }, href: "https://www.theater-laboratorium.org/" },
+    { label: { de: "Landesmuseum Natur und Mensch", en: "Museum of Nature and Man" }, href: "https://www.naturundmensch.de/" },
+    { label: { de: "Schlosshöfe Oldenburg", en: "Schlosshöfe shopping centre" }, href: "https://www.schlosshoefe-oldenburg.de/" },
+    { label: { de: "Weser-Ems-Hallen", en: "Weser-Ems-Hallen events venue" }, href: "https://www.weser-ems-hallen.de/" },
+    { label: { de: "OLantis Freizeitbad", en: "OLantis leisure pool" }, href: "https://olantis.com/" },
+  ],
+  [
+    { label: { de: "Museumsdorf Cloppenburg", en: "Cloppenburg Museum Village" }, href: "https://museumsdorf.de/" },
+    { label: { de: "Museum Alte Ziegelei Westerholt", en: "Old Brickworks Museum Westerholt" }, href: "https://www.ziegeleimuseum-westerholt.de/" },
+    { label: { de: "Gedenkstätte Esterwegen", en: "Esterwegen Memorial" }, href: "https://www.gedenkstaette-esterwegen.de/" },
+    { label: { de: "Tier- und Freizeitpark Thüle", en: "Thüle zoo and leisure park" }, href: "https://www.tier-freizeitpark.de/" },
+    { label: { de: "Märchenpark Ostrittrum", en: "Ostrittrum fairy-tale park" }, href: "https://www.freizeitpark-ostrittrum.de/" },
+    { label: { de: "Universum Bremen", en: "Universum Bremen science centre" }, href: "https://universum-bremen.de/" },
+  ],
+];
+
+const entrance = img("IMG_9260-scaled.jpg");
+---
+
+<Layout lang={lang} route="area" title={copy.title} description={copy.description} ogImage={entrance}>
+  <PageIntro title={copy.h1}>
+    <p>{copy.intro}</p>
+  </PageIntro>
+
+  <section class="py-16 md:py-24">
+    <div class="page grid gap-12 md:grid-cols-12">
+      <div class="md:col-span-5">
+        <h2 class="text-h2 font-extrabold tracking-tight">{copy.nearbyTitle}</h2>
+        <p class="prose-body mt-4">{copy.nearbyText}</p>
+        <Photo
+          src={entrance}
+          alt={copy.entranceAlt}
+          lang={lang}
+          widths={[500, 900]}
+          sizes="(min-width: 768px) 40vw, 100vw"
+          class="mt-8 aspect-[16/10]"
+        />
+        <a href={site.maps} target="_blank" rel="noopener" class="btn-quiet mt-6">
+          <Icon name="pin" class="size-4" />
+          Google Maps
+        </a>
+      </div>
+      <table class="w-full self-start md:col-span-7">
+        <caption class="sr-only">{copy.caption}</caption>
+        <thead>
+          <tr class="border-b-2 border-sea text-left text-sea">
+            <th scope="col" class="pb-2 font-bold">{copy.colPlace}</th>
+            <th scope="col" class="pb-2 text-right font-bold">{copy.colDistance}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            distances.map((d) => (
+              <tr class="border-b border-sea/10">
+                <td class="py-3.5 pr-4 font-medium">
+                  <span class="flex items-center gap-3">
+                    <Icon name="check" class="size-5 shrink-0 text-meadow" />
+                    {d.label[lang]}
+                  </span>
+                </td>
+                <td class="py-3.5 text-right whitespace-nowrap text-ink-muted tabular-nums">
+                  {ui.about} {d.meters} m
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="bg-sky py-16 md:py-24">
+    <div class="page">
+      <h2 class="text-h2 font-extrabold tracking-tight">{copy.tipsTitle}</h2>
+      <p class="prose-body mt-4">{copy.tipsText}</p>
+      <div class="mt-10 grid gap-12 md:grid-cols-3 md:gap-10">
+        {
+          tipGroups.map((tips, i) => (
+            <div>
+              <h3 class="border-b-2 border-sea pb-2 text-lg font-bold">{copy.groups[i]}</h3>
+              <ul>
+                {tips.map((tip) => (
+                  <li class="border-b border-sea/10">
+                    <a
+                      href={tip.href}
+                      target="_blank"
+                      rel="noopener"
+                      class="flex items-center justify-between gap-3 py-2.5 hover:text-blue"
+                    >
+                      {tip.label[lang]}
+                      <Icon name="external" class="size-4 shrink-0 text-ink/40" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>

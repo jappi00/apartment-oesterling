@@ -1,0 +1,24 @@
+---
+import Horizon from "./Horizon.astro";
+
+// Heading block for sub pages: a short stretch of sky
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<section class="bg-linear-to-b from-sky-deep to-sky">
+  <div class="page pt-16 pb-6 md:pt-24 md:pb-8">
+    <h1 class="text-h1 font-extrabold tracking-tight">{title}</h1>
+    {
+      Astro.slots.has("default") && (
+        <div class="prose-body mt-5 text-xl">
+          <slot />
+        </div>
+      )
+    }
+  </div>
+  <Horizon />
+</section>

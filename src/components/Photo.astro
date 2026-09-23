@@ -16,7 +16,7 @@ interface Props {
 }
 
 const { src, alt, lang, widths, sizes, class: className = "", eager = false } = Astro.props;
-const large = await getImage({ src, width: Math.min(src.width, 1920), format: "webp" });
+const large = await getImage({ src, width: Math.min(src.width, 1920), format: "webp", quality: 70 });
 ---
 
 <a
@@ -31,6 +31,7 @@ const large = await getImage({ src, width: Math.min(src.width, 1920), format: "w
     alt={alt}
     widths={widths}
     sizes={sizes}
+    quality={70}
     loading={eager ? "eager" : "lazy"}
     fetchpriority={eager ? "high" : undefined}
     class="size-full object-cover transition duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
